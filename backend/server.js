@@ -75,5 +75,15 @@ library_server.put("/api/books/:id", function(req, res) {
     })
 })
 
+library_server.delete("/api/books/:id", function(req, res) {
+    mongoose.model("book", bookSchema).deleteOne({"_id":req.params.id}).then(function(book) {
+        console.log(book)
+        return res.status(200).json(book);
+    }).catch(function(error) {
+        console.log("Cannot delete book.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+})
+
 console.log("Server started...");
 library_server.listen(port);
