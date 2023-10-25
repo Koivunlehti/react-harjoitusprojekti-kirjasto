@@ -5,7 +5,7 @@ require('dotenv').config()
 let library_server = express();
 let port = process.env.PORT;
 
-let Schema = mongoose.Schema({
+let bookSchema = mongoose.Schema({
     name:{type:String, index:true},
     writer:String,
     publisher:String,
@@ -14,9 +14,13 @@ let Schema = mongoose.Schema({
     loaned:Boolean
 });
 
-Schema.virtual("id").get(function() {
+bookSchema.virtual("id").get(function() {
     return this._id
 });
+
+let categorySchema = mongoose.Schema({
+    name:String
+})
 
 mongoose.connect(process.env.MONGO_URL).then(
     () => console.log("Database connected."),
@@ -26,7 +30,7 @@ mongoose.connect(process.env.MONGO_URL).then(
 library_server.use(express.json());
 
 library_server.get("/api/books", function(req, res) {
-    mongoose.model("book",Schema).find({}).then(function(books) {
+    mongoose.model("book",bookSchema).find({}).then(function(books) {
         console.log(books)
         return res.status(200).json(books);
     }).catch(function(error) {
@@ -36,7 +40,7 @@ library_server.get("/api/books", function(req, res) {
 });
 
 library_server.post("/api/books", function(req, res) {
-    let book = new mongoose.model("book", Schema) ({
+    let book = new mongoose.model("book", bookSchema) ({
         "name":req.body.name,
         "writer":req.body.writer,
         "publisher":req.body.publisher,
@@ -49,6 +53,24 @@ library_server.post("/api/books", function(req, res) {
         return res.status(201).json(book);
     }).catch(function(error) {
         console.log("Cannot add book.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+})
+
+library_server.put("/api/books/:id", function(req, res) {
+    let book = {
+        "name":req.body.name,
+        "writer":req.body.writer,
+        "publisher":req.body.publisher,
+        "page_amount":req.body.page_amount,
+        "category_id":req.body.category_id,
+        "loaned":req.body.loaned
+    }
+    mongoose.model("book", bookSchema).replaceOne({"_id":req.params.id},book).then(function(book) {
+        console.log(book)
+        return res.status(204).json(book);
+    }).catch(function(error) {
+        console.log("Cannot edit book.", error)
         return res.status(500).json({"Message":"Internal Server Error"});
     })
 })
