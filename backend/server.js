@@ -35,6 +35,23 @@ library_server.get("/api/books", function(req, res) {
     })
 });
 
+library_server.post("/api/books", function(req, res) {
+    let book = new mongoose.model("book", Schema) ({
+        "name":req.body.name,
+        "writer":req.body.writer,
+        "publisher":req.body.publisher,
+        "page_amount":req.body.page_amount,
+        "category_id":req.body.category_id,
+        "loaned":req.body.loaned
+    })
+    book.save().then(function(book) {
+        console.log(book)
+        return res.status(201).json(book);
+    }).catch(function(error) {
+        console.log("Cannot add book.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+})
 
 console.log("Server started...");
 library_server.listen(port);
