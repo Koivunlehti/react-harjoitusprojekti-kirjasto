@@ -6,7 +6,7 @@ let library_server = express();
 let port = process.env.PORT;
 
 let bookSchema = mongoose.Schema({
-    name:{type:String, index:true},
+    name:{type:String, unique:true},
     writer:String,
     publisher:String,
     page_amount:Number,
@@ -19,7 +19,7 @@ bookSchema.virtual("id").get(function() {
 });
 
 let categorySchema = mongoose.Schema({
-    name:String
+    name:{type:String, unique:true}
 })
 
 mongoose.connect(process.env.MONGO_URL).then(
@@ -39,7 +39,19 @@ library_server.get("/api/books", function(req, res) {
     })
 });
 
+library_server.get("/api/books/:id", function(req, res) {
+    mongoose.model("book",bookSchema).find({"_id":req.params.id}).then(function(book) {
+        console.log(book)
+        return res.status(200).json(book);
+    }).catch(function(error) {
+        console.log("Cannot find books.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+});
+
 library_server.post("/api/books", function(req, res) {
+    console.log(req.headers)
+    console.log(req.body)
     let book = new mongoose.model("book", bookSchema) ({
         "name":req.body.name,
         "writer":req.body.writer,
@@ -81,6 +93,29 @@ library_server.delete("/api/books/:id", function(req, res) {
         return res.status(200).json(book);
     }).catch(function(error) {
         console.log("Cannot delete book.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+})
+
+library_server.get("/api/categories", function(req, res) {
+    mongoose.model("category",categorySchema).find({}).then(function(categories) {
+        console.log(categories)
+        return res.status(200).json(categories);
+    }).catch(function(error) {
+        console.log("Cannot find books.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+});
+
+library_server.post("/api/categories", function(req, res) {
+    let category = new mongoose.model("category", categorySchema) ({
+        "name":req.body.name
+    })
+    category.save().then(function(category) {
+        console.log(category)
+        return res.status(201).json(category);
+    }).catch(function(error) {
+        console.log("Cannot add book.", error)
         return res.status(500).json({"Message":"Internal Server Error"});
     })
 })
