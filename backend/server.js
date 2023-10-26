@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
 require('dotenv').config()
+const cors = require("cors") 
 
 let library_server = express();
 let port = process.env.PORT;
@@ -34,6 +36,7 @@ mongoose.connect(process.env.MONGO_URL).then(
 // ---------- Middlewares ----------
 
 library_server.use(express.json());
+library_server.use(cors());
 
 // ---------- Books API ----------
 
