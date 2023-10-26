@@ -5,6 +5,8 @@ require('dotenv').config()
 let library_server = express();
 let port = process.env.PORT;
 
+// ---------- Data Schemas ----------
+
 let bookSchema = mongoose.Schema({
     name:{type:String, unique:true},
     writer:String,
@@ -22,12 +24,18 @@ let categorySchema = mongoose.Schema({
     name:{type:String, unique:true}
 })
 
+// ---------- Database connection ----------
+
 mongoose.connect(process.env.MONGO_URL).then(
     () => console.log("Database connected."),
     (error) => console.log("Database connect failed.", error)
 );
 
+// ---------- Middlewares ----------
+
 library_server.use(express.json());
+
+// ---------- Books API ----------
 
 library_server.get("/api/books", function(req, res) {
     mongoose.model("book",bookSchema).find({}).then(function(books) {
@@ -97,6 +105,8 @@ library_server.delete("/api/books/:id", function(req, res) {
     })
 })
 
+// ---------- Categories API ----------
+
 library_server.get("/api/categories", function(req, res) {
     mongoose.model("category",categorySchema).find({}).then(function(categories) {
         console.log(categories)
@@ -119,6 +129,8 @@ library_server.post("/api/categories", function(req, res) {
         return res.status(500).json({"Message":"Internal Server Error"});
     })
 })
+
+// ---------- Server Start ----------
 
 console.log("Server started...");
 library_server.listen(port);
