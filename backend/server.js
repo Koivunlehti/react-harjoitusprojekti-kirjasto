@@ -14,7 +14,7 @@ let bookSchema = mongoose.Schema({
     writer:String,
     publisher:String,
     page_amount:Number,
-    category_id:Number,
+    category_id:String,
     loaned:Boolean
 });
 
@@ -52,6 +52,16 @@ library_server.get("/api/books", function(req, res) {
 
 library_server.get("/api/books/:id", function(req, res) {
     mongoose.model("book",bookSchema).find({"_id":req.params.id}).then(function(book) {
+        console.log(book)
+        return res.status(200).json(book);
+    }).catch(function(error) {
+        console.log("Cannot find books.", error)
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+});
+
+library_server.get("/api/books/category/:id", function(req, res) {
+    mongoose.model("book",bookSchema).find({"category_id":req.params.id}).then(function(book) {
         console.log(book)
         return res.status(200).json(book);
     }).catch(function(error) {
