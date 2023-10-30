@@ -1,7 +1,7 @@
 const Book = (props) => {
     return (
         <div>
-        <p>{props.book.name}</p>
+        <h3>{props.book.name}</h3>
         <button onClick={() => props.handleClick(props.book)}>Details</button>
         </div>
     )

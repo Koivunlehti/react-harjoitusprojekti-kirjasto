@@ -1,4 +1,6 @@
 import {useState, useEffect} from "react";
+import axios from "axios"
+
 import Category from "./Category";
 import Book from "./Book";
 import BookDetails from "./BookDetails";
@@ -13,31 +15,31 @@ const Books = () => {
     // Get Categories
     useEffect(() => {
         const getData = async() => {
-            const response = await fetch(process.env.REACT_APP_BACKEND + "/api/categories", {method:"GET"})
-
-            const data = await response.json()
-            console.log("Get categories:", data)
-            setCategories(data)
+            axios.get(process.env.REACT_APP_BACKEND + "/api/categories")
+            .then(response => {
+                setCategories(response.data)
+                console.log("Get categories:", response.data)
+            })
         }
-
         getData()
     }, [])
     
     // Get books of selected category
     useEffect(() => {
         if (selectedCategory === null)
-        { return;}
+        { 
+            return
+        }
         else {
             const getData = async() => {
-                const response = await fetch(process.env.REACT_APP_BACKEND + "/api/books/category/" + selectedCategory, {method:"GET"})
-
-                const data = await response.json()
-                console.log("Get books:", data)
-                setBooks(data)
+                axios.get(process.env.REACT_APP_BACKEND + "/api/books/category/" + selectedCategory)
+                .then(response => {
+                    setBooks(response.data)
+                    console.log("Get books:", response.data)
+                })
             }
             getData()
         }
-       
     }, [selectedCategory])
 
     // Select category button click
