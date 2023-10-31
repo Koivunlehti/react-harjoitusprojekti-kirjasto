@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const cors = require("cors");
 
-const adminRoutes = require("./routes/admin");
+const loggedInUsers = require("./routes/logged_in_user");
 
 const Book = require("./models/book");
 const Category = require("./models/category");
@@ -64,7 +64,6 @@ library_server.get("/api/books/category/:id", function(req, res) {
 // ---------- Categories API ----------
 
 library_server.get("/api/categories", function(req, res) {
-    //mongoose.model("category", categorySchema).find({}).then(function(categories) {
     Category.find({}).then(function(categories) {
         console.log(categories);
         return res.status(200).json(categories);
@@ -85,7 +84,7 @@ library_server.post("/login", function(req, res) {
 			}
             token = crypto.randomBytes(64).toString("hex");
             let session = Session({
-                "user":req.body.username,
+                "user":req.body.name,
 				"token":token,
 				"expires":Date.now() + sessionLife,
                 "admin":user.admin
@@ -145,6 +144,7 @@ const isUserLogged = (req,res,next) => {
 			session.expires = now + sessionLife;
 			req.session = {};
 			req.session.user = session.user;
+            req.session.admin = session.admin;
 			session.save().then(function() {
 				return next();
 			}).catch(function(error) {
@@ -157,9 +157,8 @@ const isUserLogged = (req,res,next) => {
 		return res.status(403).json({"Message":"Forbidden"})
 	})
 }
-library_server.use("/admin", isUserLogged, adminRoutes);
 
-
+library_server.use("/admin", isUserLogged, loggedInUsers);
 
 // ---------- Server Start ----------
 
