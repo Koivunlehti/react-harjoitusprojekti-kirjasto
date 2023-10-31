@@ -2,18 +2,73 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-const Book = require("../models/book")
+const Book = require("../models/book");
 
 // ---------- Normal user routes ----------
 
 router.put("/books/loan/:id",function(req, res) {
-    console.log(req.session)
-    return res.status(200).json({"Message":"Book loaned"})
+    Book.findById({"_id":req.params.id})
+    .then(function(book) {
+        if (book != null) {
+            if (book.loaned === "") {
+                let newBook = {
+                "name":book.name,
+                "writer":book.writer,
+                "publisher":book.publisher,
+                "page_amount":book.page_amount,
+                "category_id":book.category_id,
+                "loaned": req.session.user
+                };
+                Book.replaceOne({"_id":req.params.id}, newBook)
+                .then(function(book) {
+                    return res.status(204).json(book);
+                }).catch(function(error) {
+                    console.log("Cannot edit book.", error);
+                    return res.status(500).json({"Message":"Internal Server Error"});
+                })
+            } else {
+                return res.status(404).json({"Message":"book already loaned"});
+            }
+        } else {
+            return res.status(404).json({"Message":"Cannot find book"});
+        }
+    }).catch(function(error) {
+        console.log("Error while finding book", error);
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
 })
 
 router.put("/books/return/:id",function(req, res) {
-    console.log(req.session)
-    return res.status(200).json({"Message":"Book returned"})
+    Book.findById({"_id":req.params.id})
+    .then(function(book) {
+        if (book != null) {
+            if (book.loaned !== "" && book.loaned === req.session.user) 
+            {
+                let newBook = {
+                "name":book.name,
+                "writer":book.writer,
+                "publisher":book.publisher,
+                "page_amount":book.page_amount,
+                "category_id":book.category_id,
+                "loaned": ""
+                };
+                Book.replaceOne({"_id":req.params.id}, newBook)
+                .then(function(book) {
+                    return res.status(204).json(book);
+                }).catch(function(error) {
+                    console.log("Cannot edit book.", error);
+                    return res.status(500).json({"Message":"Internal Server Error"});
+                })
+            } else {
+                return res.status(404).json({"Message":"Cannot return book"});
+            }
+        } else {
+            return res.status(404).json({"Message":"Cannot find book"});
+        }
+    }).catch(function(error) {
+        console.log("Error while finding book", error);
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
 })
 
 

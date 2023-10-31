@@ -15,7 +15,7 @@ const Session = require("./models/session");
 let library_server = express();
 let port = process.env.PORT;
 
-const sessionLife = 360000;
+const sessionLife = 3600000;
 
 // ---------- Database connection ----------
 
