@@ -1,9 +1,11 @@
 import {useState, useEffect} from "react";
-import axios from "axios"
 
 import Category from "./Category";
 import Book from "./Book";
 import BookDetails from "./BookDetails";
+
+import categoryService from "../services/categories"
+import bookService from "../services/books"
 
 const Books = () => {
 
@@ -11,36 +13,55 @@ const Books = () => {
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [books, setBooks] = useState([])
     const [selectedBook, setSelectedBook] = useState(null)
- 
+
     // Get Categories
     useEffect(() => {
-        const getData = async() => {
-            axios.get(process.env.REACT_APP_BACKEND + "/api/categories")
-            .then(response => {
-                setCategories(response.data)
-                console.log("Get categories:", response.data)
-            })
-        }
-        getData()
+        categoryService.getAll()
+        .then(categories => {
+            setCategories(categories);
+            console.log("Get categories:", categories);
+        })
     }, [])
-    
-    // Get books of selected category
+
     useEffect(() => {
         if (selectedCategory === null)
-        { 
-            return
-        }
-        else {
-            const getData = async() => {
-                axios.get(process.env.REACT_APP_BACKEND + "/api/books/category/" + selectedCategory)
-                .then(response => {
-                    setBooks(response.data)
-                    console.log("Get books:", response.data)
-                })
-            }
-            getData()
-        }
+            return;
+        bookService.getByCategoryId(selectedCategory)
+        .then(books => {
+            setBooks(books);
+            console.log("Get books:", books);
+        })
     }, [selectedCategory])
+
+    // Get Categories
+    // useEffect(() => {
+    //     const getData = async() => {
+    //         axios.get(process.env.REACT_APP_BACKEND + "/api/categories")
+    //         .then(response => {
+    //             setCategories(response.data)
+    //             console.log("Get categories:", response.data)
+    //         })
+    //     }
+    //     getData()
+    // }, [])
+    
+    // // Get books of selected category
+    // useEffect(() => {
+    //     if (selectedCategory === null)
+    //     { 
+    //         return
+    //     }
+    //     else {
+    //         const getData = async() => {
+    //             axios.get(process.env.REACT_APP_BACKEND + "/api/books/category/" + selectedCategory)
+    //             .then(response => {
+    //                 setBooks(response.data)
+    //                 console.log("Get books:", response.data)
+    //             })
+    //         }
+    //         getData()
+    //     }
+    // }, [selectedCategory])
 
     // Select category button click
     const handleCategoryClick = (id) => {
@@ -56,7 +77,6 @@ const Books = () => {
     // Open details of the book
     const handleBookDetailsClick = (book) => {
         setSelectedBook(book)
-
     }
 
     // Return back from book details

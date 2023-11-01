@@ -73,7 +73,7 @@ router.put("/books/return/:id",function(req, res) {
 
 
 
-// ---------- Admin routes ----------
+// ---------- Admin user routes ----------
 
 router.post("/books", function(req, res) {
     if (req.session.admin) {
