@@ -90,7 +90,7 @@ library_server.post("/login", function(req, res) {
                 "admin":user.admin
 			});
 			session.save().then(function() {
-				return res.status(200).json({"token":token});
+				return res.status(200).json({"user":req.body.name, "token":token, "admin":user.admin});
 			}).catch(function(error) {
 				console.log(error);
 				return res.status(500).json({"Message":"Internal Server Error"});
@@ -107,7 +107,7 @@ library_server.post("/register", function(req, res) {
         let user = new User({
             "name":req.body.name,
             "password":password_hash,
-            "admin":req.body.admin
+            "admin":false
         })
         user.save().then(function(user) {
             return res.status(201).json({"Message":"Register success"})

@@ -9,8 +9,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false)
 
   useEffect(() => {
-    if(sessionStorage.getItem("loggedIn")) {
-      setLoggedIn(JSON.parse(sessionStorage.getItem("loggedIn")))
+    if(sessionStorage.getItem("user")) {
+      setLoggedIn(JSON.parse(sessionStorage.getItem("user")))
     }
   }, [])
 
