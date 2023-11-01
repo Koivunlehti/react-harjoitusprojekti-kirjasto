@@ -1,15 +1,27 @@
 import NavigationBar from "./components/NavigationBar";
 import Books from "./components/Books";
+import Login from "./components/Login";
 import {Route, Routes, Navigate} from "react-router-dom";
 
+import {useState, useEffect} from "react";
+
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if(sessionStorage.getItem("loggedIn")) {
+      setLoggedIn(JSON.parse(sessionStorage.getItem("loggedIn")))
+    }
+  }, [])
+
+
   return (
     <div className="App">
-      <NavigationBar isLoggedIn={true}/>
+      <NavigationBar isLoggedIn={loggedIn} login={setLoggedIn}/>
       <Routes>
           <Route path="/" element={<h2>Main</h2>} />
-          <Route path="/books" element={<Books />} />
-          <Route path="/login" element={<h2>Login</h2>} />
+          <Route path="/books" element={<Books isLoggedIn={loggedIn} />} />
+          <Route path="/login" element={<Login isLoggedIn={loggedIn} login={setLoggedIn} />} />
           <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

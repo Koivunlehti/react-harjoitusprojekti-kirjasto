@@ -1,7 +1,12 @@
 import {Link} from "react-router-dom"
 
 const NavigationBar = (props) => {
-    console.log(props.isLoggedIn)
+
+    const logout = () => {
+        props.login(false)
+        sessionStorage.setItem("loggedIn", "false")
+    }
+
     if (props.isLoggedIn) {
         return (
             <nav className="navbar navbar-expand-sm navbar-light bg-light">
@@ -17,7 +22,7 @@ const NavigationBar = (props) => {
                         <Link className="nav-link" to="/loaned">Loaned Books</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/logout">Logout</Link>
+                        <button onClick={logout}>Logout</button>
                     </li>
                 </ul>
             </nav>
