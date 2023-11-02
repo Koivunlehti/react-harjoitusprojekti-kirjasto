@@ -1,6 +1,7 @@
 import NavigationBar from "./components/NavigationBar";
 import Books from "./components/Books";
 import Login from "./components/Login";
+import LoanedBooks from "./components/LoanedBooks";
 import {Route, Routes, Navigate} from "react-router-dom";
 
 import {useState, useEffect} from "react";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<h2>Main</h2>} />
           <Route path="/books" element={<Books isLoggedIn={loggedIn} />} />
           <Route path="/login" element={<Login isLoggedIn={loggedIn} login={setLoggedIn} />} />
+          <Route path="/loaned" element={<LoanedBooks isLoggedIn={loggedIn}/>} />
           <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

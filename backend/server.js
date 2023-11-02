@@ -61,6 +61,16 @@ library_server.get("/api/books/category/:id", function(req, res) {
     })
 });
 
+library_server.get("/api/books/loaned/:user", function(req, res) {
+    Book.find({"loaned":req.params.user}).then(function(book) {
+        console.log(book);
+        return res.status(200).json(book);
+    }).catch(function(error) {
+        console.log("Cannot find books.", error);
+        return res.status(500).json({"Message":"Internal Server Error"});
+    })
+});
+
 // ---------- Categories API ----------
 
 library_server.get("/api/categories", function(req, res) {

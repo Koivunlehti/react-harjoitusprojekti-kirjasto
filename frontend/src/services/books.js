@@ -21,10 +21,22 @@ const getByCategoryId = (id) => {
     return request.then(response => response.data )
 }
 
+const getByLoaningUser = (username) => {
+    const request = axios.get(url + "/api/books/loaned/" + username)
+
+    return request.then(response => response.data )
+}
+
 const loanBook = (id, token) => {
     const request = axios.put(url + "/admin/books/loan/" + id, {}, {headers:{"Content-Type":"application/json","token":token}})
 
     return request.then(response => response.data )
 }
 
-export default {getAll, getById, getByCategoryId, loanBook}
+const returnBook = (id, token) => {
+    const request = axios.put(url + "/admin/books/return/" + id, {}, {headers:{"Content-Type":"application/json","token":token}})
+
+    return request.then(response => response.data)
+}
+
+export default {getAll, getById, getByCategoryId, getByLoaningUser, loanBook, returnBook}
