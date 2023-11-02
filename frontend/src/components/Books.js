@@ -7,7 +7,7 @@ import BookDetails from "./BookDetails";
 import categoryService from "../services/categories"
 import bookService from "../services/books"
 
-const Books = () => {
+const Books = (props) => {
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null)
@@ -33,36 +33,6 @@ const Books = () => {
         })
     }, [selectedCategory])
 
-    // Get Categories
-    // useEffect(() => {
-    //     const getData = async() => {
-    //         axios.get(process.env.REACT_APP_BACKEND + "/api/categories")
-    //         .then(response => {
-    //             setCategories(response.data)
-    //             console.log("Get categories:", response.data)
-    //         })
-    //     }
-    //     getData()
-    // }, [])
-    
-    // // Get books of selected category
-    // useEffect(() => {
-    //     if (selectedCategory === null)
-    //     { 
-    //         return
-    //     }
-    //     else {
-    //         const getData = async() => {
-    //             axios.get(process.env.REACT_APP_BACKEND + "/api/books/category/" + selectedCategory)
-    //             .then(response => {
-    //                 setBooks(response.data)
-    //                 console.log("Get books:", response.data)
-    //             })
-    //         }
-    //         getData()
-    //     }
-    // }, [selectedCategory])
-
     // Select category button click
     const handleCategoryClick = (id) => {
         setSelectedCategory(id)
@@ -77,6 +47,18 @@ const Books = () => {
     // Open details of the book
     const handleBookDetailsClick = (book) => {
         setSelectedBook(book)
+    }
+
+    const handleBookDetailsLoanClick = (loanedBook) => {
+        bookService.loanBook(loanedBook._id, props.isLoggedIn.token)
+        .then(() => {
+            let updatedBook = loanedBook
+            updatedBook.loaned = props.isLoggedIn.user
+            setBooks(books.map(book => book.id === loanedBook._id ? updatedBook : book))
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     }
 
     // Return back from book details
@@ -96,7 +78,7 @@ const Books = () => {
         if (selectedBook !== null) {
             return (
                 <div>
-                    <BookDetails book={selectedBook} handleClick={handleBookDetailsBackClick}/>
+                    <BookDetails book={selectedBook} handleClick={handleBookDetailsBackClick} loanBookHandler={handleBookDetailsLoanClick} isLoggedIn={props.isLoggedIn}/>
                 </div>
             )
         }

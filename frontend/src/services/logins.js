@@ -17,7 +17,7 @@ const register = (details) => {
 }
 
 const logout = (token) => {
-    const request = axios.post(url + "/logout", token)
+    const request = axios.post(url + "/logout", {},{headers:{"Content-Type":"application/json","token":token}})
 
     return request.then(response => response.data )
 }
