@@ -9,10 +9,10 @@ const getAll = () => {
     return request.then(response => response.data )
 }
 
-const addNew = ( categoryObject ) => {
+const createCategory = ( categoryObject ) => {
     const request = axios.post(url, categoryObject)
     
     return request.then(response => response.data)
 }
 
-export default {getAll, addNew}
+export default {getAll, createCategory}

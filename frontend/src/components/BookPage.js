@@ -7,7 +7,7 @@ import BookDetails from "./BookDetails";
 import categoryService from "../services/categories"
 import bookService from "../services/books"
 
-const Books = (props) => {
+const BookPage = (props) => {
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null)
@@ -94,4 +94,4 @@ const Books = (props) => {
     }
 }
 
-export default Books;
+export default BookPage;

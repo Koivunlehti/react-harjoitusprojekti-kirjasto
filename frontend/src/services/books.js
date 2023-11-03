@@ -39,4 +39,22 @@ const returnBook = (id, token) => {
     return request.then(response => response.data)
 }
 
-export default {getAll, getById, getByCategoryId, getByLoaningUser, loanBook, returnBook}
+const createBook = (book) => {
+    const request = axios.post(url + "admin/books", book)
+
+    return request.then(response => response.data )
+}
+
+const updateBook = (id, book) => {
+    const request = axios.post(url + "admin/books/"+ id, book)
+
+    return request.then(response => response.data )
+}
+
+const deleteBook = (id) => {
+    const request = axios.delete(url + "admin/books/"+ id)
+
+    return request.then(response => response.data )
+}
+
+export default {getAll, getById, getByCategoryId, getByLoaningUser, loanBook, returnBook, createBook, updateBook, deleteBook}

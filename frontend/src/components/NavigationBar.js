@@ -29,7 +29,7 @@ const NavigationBar = (props) => {
                     <li className="nav-item">
                         <Link className="nav-link" to="/loaned">Loaned Books</Link>
                     </li>
-                    {props.isLoggedIn.admin ? <li> <Link className="nav-link" to="/loaned">Admin stuff</Link> </li> : <></>}        
+                    {props.isLoggedIn.admin ? <li> <Link className="nav-link" to="/admin">Admin stuff</Link> </li> : <></>}        
                     <li className="nav-item">
                         <button onClick={logout}>Logout</button>
                     </li>
