@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 
 const Book = require("../models/book");
+const Category = require("../models/category");
 
 // ---------- Normal user routes ----------
 
@@ -137,15 +138,47 @@ router.delete("/books/:id", function(req, res) {
 });
 
 router.post("/categories", function(req, res) {
+    console.log(req.body)
     if (req.session.admin) {
-        let category = new mongoose.model("category", categorySchema) ({
-            "name":req.body.name
-        });
+        let category = new Category ({"name":req.body.name}) 
         category.save().then(function(category) {
             console.log(category);
             return res.status(201).json(category);
         }).catch(function(error) {
             console.log("Cannot add book.", error);
+            return res.status(500).json({"Message":"Internal Server Error"});
+        })
+    } else {
+        console.log("Not admin")
+        return res.status(403).json({"Message":"Forbidden"})
+    }
+});
+
+router.put("/categories/:id", function(req, res) {
+    if (req.session.admin) {
+        let category = {
+            "name":req.body.name,
+        };
+        Category.replaceOne({"_id":req.params.id},category).then(function(category) {
+            console.log(category);
+            return res.status(204).json(category);
+        }).catch(function(error) {
+            console.log("Cannot edit category.", error);
+            return res.status(500).json({"Message":"Internal Server Error"});
+        })
+    } else {
+        console.log("Not admin")
+        return res.status(403).json({"Message":"Forbidden"})
+    }
+});
+
+router.delete("/categories/:id", function(req, res) {
+    if (req.session.admin) {
+        Category.deleteOne({"_id":req.params.id}).then(function(category) {
+            console.log(category);
+            return res.status(200).json(category);
+        }).catch(function(error) {
+            console.log("Cannot delete category.", error);
             return res.status(500).json({"Message":"Internal Server Error"});
         })
     } else {
