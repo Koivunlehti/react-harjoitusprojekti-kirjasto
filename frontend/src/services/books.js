@@ -39,20 +39,20 @@ const returnBook = (id, token) => {
     return request.then(response => response.data)
 }
 
-const createBook = (book) => {
-    const request = axios.post(url + "admin/books", book)
+const createBook = (book, token) => {
+    const request = axios.post(url + "/admin/books", book, {headers:{"Content-Type":"application/json","token":token}})
 
     return request.then(response => response.data )
 }
 
-const updateBook = (id, book) => {
-    const request = axios.post(url + "admin/books/"+ id, book)
+const updateBook = (id, book, token) => {
+    const request = axios.put(url + "/admin/books/"+ id, book, {headers:{"Content-Type":"application/json","token":token}})
 
     return request.then(response => response.data )
 }
 
-const deleteBook = (id) => {
-    const request = axios.delete(url + "admin/books/"+ id)
+const deleteBook = (id, token) => {
+    const request = axios.delete(url + "/admin/books/"+ id, {headers:{"Content-Type":"application/json","token":token}})
 
     return request.then(response => response.data )
 }
