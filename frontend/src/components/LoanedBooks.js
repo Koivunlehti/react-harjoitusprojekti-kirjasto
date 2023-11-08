@@ -39,7 +39,7 @@ const LoanedBooks = (props) => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Loaned Books</th>
+                        <th><h3>Loaned Books</h3></th>
                     </tr>
                 </thead>
                 <tbody>

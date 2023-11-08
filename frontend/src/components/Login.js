@@ -44,14 +44,23 @@ const Login = (props) => {
     }
 
     return (
-        <form >
-            <label htmlFor="name">Username</label>
-            <input type="text" id="name" name="name" onChange={onChange} value={loginInfo.username}></input>
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" onChange={onChange} value={loginInfo.password}></input>
-            <button onClick={click} name="login">Login</button>
-            <button onClick={click} name="register">Register</button>
-        </form>
+        <div className="container">
+            <form >
+                <h3>Login</h3>
+                <div className="mb-3">
+                    <label className="form-label" htmlFor="name">Username</label>
+                    <input className="form-control" type="text" id="name" name="name" onChange={onChange} value={loginInfo.username}></input>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label" htmlFor="password">Password</label>
+                    <input className="form-control" type="password" id="password" name="password" onChange={onChange} value={loginInfo.password}></input>
+                </div>
+                <div className="d-flex">
+                    <button className="btn btn-outline-success flex-fill" onClick={click} name="login">Login</button>
+                    <button className="btn btn-outline-primary flex-fill" onClick={click} name="register">Register</button>
+                </div>
+            </form>
+        </div>
     )
 }
 

@@ -9,6 +9,7 @@ const NavigationBar = (props) => {
         .then(() => {
             props.login({})
             sessionStorage.removeItem("user")
+            navigate("/")
         })
         .catch((error) => {
             console.log(error)

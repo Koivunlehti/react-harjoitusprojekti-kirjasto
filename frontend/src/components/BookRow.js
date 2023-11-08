@@ -57,7 +57,7 @@ const BookRow = (props) => {
                 {props.book.name}
             </td>
             <td>
-                <button className="btn btn-outline-danger " onClick={() => props.onClick(props.book._id)}>Return book</button>
+                <button className="btn btn-outline-danger" onClick={() => props.onClick(props.book._id)}>Return book</button>
             </td>
         </tr>
     )    
