@@ -3,6 +3,7 @@ import BookPage from "./components/BookPage";
 import Login from "./components/Login";
 import LoanedBooks from "./components/LoanedBooks";
 import AdminPage from "./components/AdminPage";
+import MainPage from "./components/MainPage";
 import {Route, Routes, Navigate} from "react-router-dom";
 
 import {useState, useEffect} from "react";
@@ -21,7 +22,7 @@ function App() {
     <div className="App">
       <NavigationBar isLoggedIn={loggedIn} login={setLoggedIn}/>
       <Routes>
-          <Route path="/" element={<h2>Main</h2>} />
+          <Route path="/" element={<MainPage />} />
           <Route path="/books" element={<BookPage isLoggedIn={loggedIn} />} />
           <Route path="/login" element={<Login isLoggedIn={loggedIn} login={setLoggedIn} />} />
           <Route path="/loaned" element={<LoanedBooks isLoggedIn={loggedIn}/>} />
