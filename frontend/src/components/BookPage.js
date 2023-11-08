@@ -68,26 +68,35 @@ const BookPage = (props) => {
 
     if (selectedCategory === null) {
         return (
-            <div>
-                {categories.map(category => <Category key={category._id} category={category} handleClick={handleCategoryClick}/>)}
-                <p>{selectedCategory}</p>
+            <div className="container">
+                <h3>Book Categories:</h3>
+                <div className="row row-cols-1 row-cols-md-4 g-4">
+                    {categories.map(category => <Category key={category._id} category={category} handleClick={handleCategoryClick}/>)}
+                    <p>{selectedCategory}</p>
+                </div>
             </div>
         )
     }
     else {
         if (selectedBook !== null) {
             return (
-                <div>
+                <div className="container">
                     <BookDetails book={selectedBook} handleClick={handleBookDetailsBackClick} loanBookHandler={handleBookDetailsLoanClick} isLoggedIn={props.isLoggedIn}/>
                 </div>
             )
         }
         else {
             return (
-                <div>
-                    <p>Selected Category: {categories.map(category => category._id === selectedCategory ? category.name : "")}</p>
-                    {books.map(book => <Book key={book._id} book={book} handleClick={handleBookDetailsClick}/>)}
-                    <button onClick={handleBackClick}>Back to Categories</button>
+                <div className="container">
+                    <h3 className="mb-3">Selected Category: {categories.map(category => category._id === selectedCategory ? category.name : "")}</h3>
+                    {
+                        books.length > 0 ?
+                            <div className="row row-cols-1 row-cols-md-4 g-4">
+                                {books.map(book => <Book key={book._id} book={book} handleClick={handleBookDetailsClick}/>)}
+                            </div> : 
+                            <p>Sorry, no books in this category yet...</p>
+                    }
+                    <button className="btn btn-outline-primary mt-3"onClick={handleBackClick}>Back to Categories</button>
                 </div>
             )
         }

@@ -26,7 +26,7 @@ const NavigationBar = (props) => {
                 <h3 className="navbar-brand">Library</h3>
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/">Homepage</Link>
+                        <Link className="nav-link" to="/">Home</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/books">Books</Link>

@@ -35,18 +35,20 @@ const LoanedBooks = (props) => {
     }
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>Loaned Books</th>
-                </tr>
-            </thead>
-            <tbody>
-                {loanedBooks.length === 0 ? 
-                <tr><td><p>No loaned books</p></td></tr> : 
-                loanedBooks.map(book => <BookRow key={book._id} book={book} onClick={returnBookHandler}/>)}
-            </tbody>
-        </table>
+        <div className="container">
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>Loaned Books</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loanedBooks.length === 0 ? 
+                    <tr><td><p>No loaned books</p></td></tr> : 
+                    loanedBooks.map(book => <BookRow key={book._id} book={book} onClick={returnBookHandler}/>)}
+                </tbody>
+            </table>
+        </div>
     )
 }
 
