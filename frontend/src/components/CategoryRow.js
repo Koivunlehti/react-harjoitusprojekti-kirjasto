@@ -11,8 +11,8 @@ const CategoryRow = (props) => {
         <>
             <tr>
                 {props.admin ? <td><input onChange={onChange} value={catName}></input></td> : <td>{props.category.name}</td>}
-                {props.admin ? <td><button onClick={() => props.handleCategoryUpdate(props.category._id, catName)}>Update</button></td> : <></>}
-                {props.admin ? <td><button onClick={() => props.handleCategoryDelete(props.category._id)}>Delete</button></td> : <></>}
+                {props.admin ? <td><button className="btn btn-outline-success" onClick={() => props.handleCategoryUpdate(props.category._id, catName)}>Update</button></td> : <></>}
+                {props.admin ? <td><button className="btn btn-outline-danger"onClick={() => props.handleCategoryDelete(props.category._id)}>Delete</button></td> : <></>}
             </tr>
         </>
     )

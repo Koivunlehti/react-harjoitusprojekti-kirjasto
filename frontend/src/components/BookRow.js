@@ -43,10 +43,10 @@ const BookRow = (props) => {
                 <input type="text" name="loaned" value={book.loaned} onChange={onChange} />
                 </td>
                 <td>
-                    <button onClick={() => props.handleBookUpdate(props.book._id, book)}>Update</button>
+                    <button className="btn btn-outline-success" onClick={() => props.handleBookUpdate(props.book._id, book)}>Update</button>
                 </td>
                 <td>
-                    <button onClick={() => props.handleBookDelete(props.book._id)}>Delete</button>
+                    <button className="btn btn-outline-danger" onClick={() => props.handleBookDelete(props.book._id)}>Delete</button>
                 </td>
             </tr>
         )

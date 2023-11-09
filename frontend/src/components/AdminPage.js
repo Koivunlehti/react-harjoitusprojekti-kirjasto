@@ -139,51 +139,64 @@ const AdminPage = (props) => {
     }
 
     return (
-        <>
-            <h2>Adminpage</h2>
+        <div className="container">
+            <h3>Admin</h3>
+            <hr></hr>
             <h4>Manage categories:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category name</th>
-                    </tr>
-                </thead>       
-                <tbody>
-                    {categories.map(category => <CategoryRow key={category._id} category={category} handleCategoryUpdate={handleCategoryUpdate} handleCategoryDelete={handleCategoryDelete} admin={props.isLoggedIn.admin}/>)}
-                    <tr>
-                        <td><input type="text" id="category" name="category" onChange={onChangeNewCat} value={catName}></input></td>
-                        <td><button onClick={handleCategoryAddNew}>Add new category</button></td>
-                    </tr>
-                </tbody>
-            </table> 
+            <div className="d-inline-flex">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th colSpan={3}>Category name</th>
+                        </tr>
+                    </thead>       
+                    <tbody>
+                        {categories.map(category => <CategoryRow key={category._id} category={category} handleCategoryUpdate={handleCategoryUpdate} handleCategoryDelete={handleCategoryDelete} admin={props.isLoggedIn.admin}/>)}
+                    </tbody>
+                    <tfoot>                        
+                        <tr>
+                            <td><input type="text" id="category" name="category" onChange={onChangeNewCat} value={catName}></input></td>
+                            <td colSpan={2}><button className="btn btn-outline-primary" onClick={handleCategoryAddNew}>Add new category</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div> 
             <h4>Manage books:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Book name</th>
-                        <th>Writer</th>
-                        <th>Publisher</th>
-                        <th>Page amount</th>
-                        <th>Category id</th>
-                        <th>Loaned</th>
-                    </tr>
-                </thead>       
-                <tbody>
-                    {books.map(book => <BookRow key={book._id} book={book} categories={categories} 
-                        handleBookUpdate={handleBookUpdate} handleBookDelete={handleBookDelete} admin={props.isLoggedIn.admin} />)}
-                    <tr><td><input type="text" name="name" value={book.name} onChange={onChangeNewBook} /></td>
-                        <td><input type="text" name="writer" value={book.writer} onChange={onChangeNewBook} /></td>
-                        <td><input type="text" name="publisher" value={book.publisher} onChange={onChangeNewBook} /></td>
-                        <td><input type="number" name="page_amount" value={book.page_amount} onChange={onChangeNewBook} /></td>
-                        <td><select name="category_id" onChange={onChangeNewBook} value={categories.length > 0 ? categories[0]._id : ""}>
-                            {categories.map(category => <option key={category.name} name={category.name} value={category._id}>{category.name}</option>)}
-                        </select></td>
-                        <td><input type="text" name="loaned" value={book.loaned} onChange={onChangeNewBook} /></td>
-                        <td><button onClick={handleBookAddNew}>Add new book</button></td>
-                    </tr>
-                </tbody>
-            </table>   
-        </>
+            <div className="d-inline-flex">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Book name</th>
+                            <th>Writer</th>
+                            <th>Publisher</th>
+                            <th>Page amount</th>
+                            <th>Category id</th>
+                            <th colSpan={3}>Loaned</th>
+                        </tr>
+                    </thead>       
+                    <tbody>
+                        {books.map(book => <BookRow key={book._id} book={book} categories={categories} 
+                            handleBookUpdate={handleBookUpdate} handleBookDelete={handleBookDelete} admin={props.isLoggedIn.admin} />)}
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><input type="text" name="name" value={book.name} onChange={onChangeNewBook} /></td>
+                            <td><input type="text" name="writer" value={book.writer} onChange={onChangeNewBook} /></td>
+                            <td><input type="text" name="publisher" value={book.publisher} onChange={onChangeNewBook} /></td>
+                            <td><input type="number" name="page_amount" value={book.page_amount} onChange={onChangeNewBook} /></td>
+                            <td><select name="category_id" onChange={onChangeNewBook} value={categories.length > 0 ? categories[0]._id : ""}>
+                                {categories.map(category => <option key={category.name} name={category.name} value={category._id}>{category.name}</option>)}
+                            </select></td>
+                            <td><input type="text" name="loaned" value={book.loaned} onChange={onChangeNewBook} /></td>
+                            <td colSpan={2}>
+                                <button className="btn btn-outline-primary" onClick={handleBookAddNew}>Add new book</button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     )
 }
 
