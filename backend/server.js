@@ -23,13 +23,13 @@ mongoose.connect(process.env.MONGO_URL).then(
 library_server.use(express.json());
 library_server.use(cors());
 
-// ---------- Books and Categories API ----------
+// ---------- Books and Categories routes ----------
 library_server.use("/api",books)
 
-// ---------- Login API ----------
+// ---------- Login routes ----------
 library_server.use("/user",login)
 
-// ---------- More Middlewares ----------
+// ---------- Function for checking logged in status before admin routes ---------- 
 const isUserLogged = (req,res,next) => {
     Session.findOne({"token":req.headers.token}).then(function(session) {
         if(!session) {
@@ -41,7 +41,7 @@ const isUserLogged = (req,res,next) => {
             Session.deleteOne({"_id":session._id}).then(function() {
 				return res.status(403).json({"Message":"Forbidden"})
 			}).catch(function(error) {
-				console.log("Failed to remove session. Reason",error);
+				console.log("Failed to remove session.", error);
 				return res.status(403).json({"Message":"Forbidden"})
 			})
 		} else {
@@ -52,17 +52,34 @@ const isUserLogged = (req,res,next) => {
 			session.save().then(function() {
 				return next();
 			}).catch(function(error) {
-				console.log("Failed to resave session. Reason",error);
+				console.log("Failed to resave session.", error);
 				return next();
 			})
 		}
 	}).catch(function(error){
-		console.log("Failed to find session. Reason",error);
-		return res.status(403).json({"Message":"Forbidden"})
+		console.log("Failed to find session.", error);
+		return res.status(401).json({"Message":"Forbidden"})
 	})
 }
 
+// ---------- Admin routes ----------
 library_server.use("/admin", isUserLogged, loggedInUsers);
+
+
+// ---------- Error handling middleware ----------
+const errorHandler = (error, request, response, next) => {
+    console.log("error name:", error.name)
+	console.log("error message:", error.message)
+
+    if (error.name === "CastError") {
+		return response.status(400).send({ error: "Format of the id is wrong" })
+	} else if (error.name === "MongoServerSelectionError") {
+		return response.status(500).send({ error: "Cannot connect to database" })
+	}
+	
+	next(error) 
+}
+library_server.use(errorHandler)
 
 // ---------- Server Start ----------
 

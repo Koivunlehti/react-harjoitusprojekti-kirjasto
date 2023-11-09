@@ -7,7 +7,7 @@ const Category = require("../models/category");
 
 // ---------- Normal user routes ----------
 
-router.put("/books/loan/:id",function(req, res) {
+router.put("/books/loan/:id",function(req, res, next) {
     Book.findById({"_id":req.params.id})
     .then(function(book) {
         if (book != null) {
@@ -22,7 +22,7 @@ router.put("/books/loan/:id",function(req, res) {
                 };
                 Book.replaceOne({"_id":req.params.id}, newBook)
                 .then(function(book) {
-                    return res.status(204).json(book);
+                    return res.status(201).json(book);
                 }).catch(function(error) {
                     console.log("Cannot edit book.", error);
                     return res.status(500).json({"Message":"Internal Server Error"});
@@ -33,13 +33,10 @@ router.put("/books/loan/:id",function(req, res) {
         } else {
             return res.status(404).json({"Message":"Cannot find book"});
         }
-    }).catch(function(error) {
-        console.log("Error while finding book", error);
-        return res.status(500).json({"Message":"Internal Server Error"});
-    })
+    }).catch(error => next(error)) 
 })
 
-router.put("/books/return/:id",function(req, res) {
+router.put("/books/return/:id",function(req, res, next) {
     Book.findById({"_id":req.params.id})
     .then(function(book) {
         if (book != null) {
@@ -55,7 +52,7 @@ router.put("/books/return/:id",function(req, res) {
                 };
                 Book.replaceOne({"_id":req.params.id}, newBook)
                 .then(function(book) {
-                    return res.status(204).json(book);
+                    return res.status(201).json(book);
                 }).catch(function(error) {
                     console.log("Cannot edit book.", error);
                     return res.status(500).json({"Message":"Internal Server Error"});
@@ -66,17 +63,14 @@ router.put("/books/return/:id",function(req, res) {
         } else {
             return res.status(404).json({"Message":"Cannot find book"});
         }
-    }).catch(function(error) {
-        console.log("Error while finding book", error);
-        return res.status(500).json({"Message":"Internal Server Error"});
-    })
+    }).catch(error => next(error))
 })
 
 
 
 // ---------- Admin user routes ----------
 
-router.post("/books", function(req, res) {
+router.post("/books", function(req, res, next) {
     if (req.session.admin) {
         let book = new Book ({
             "name":req.body.name,
@@ -89,17 +83,14 @@ router.post("/books", function(req, res) {
         book.save().then(function(book) {
             console.log(book);
             return res.status(201).json(book);
-        }).catch(function(error) {
-            console.log("Cannot add book.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})
     }
 });
 
-router.put("/books/:id", function(req, res) {
+router.put("/books/:id", function(req, res, next) {
     if (req.session.admin) {
         let book = {
             "name":req.body.name,
@@ -111,61 +102,49 @@ router.put("/books/:id", function(req, res) {
         };
         Book.replaceOne({"_id":req.params.id},book).then(function(book) {
             console.log(book);
-            return res.status(204).json(book);
-        }).catch(function(error) {
-            console.log("Cannot edit book.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+            return res.status(201).json(book);
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})
     }
 });
 
-router.delete("/books/:id", function(req, res) {
+router.delete("/books/:id", function(req, res, next) {
     if (req.session.admin) {
         Book.deleteOne({"_id":req.params.id}).then(function(book) {
             console.log(book);
-            return res.status(200).json(book);
-        }).catch(function(error) {
-            console.log("Cannot delete book.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+            return res.status(204).json(book);
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})
     }
 });
 
-router.post("/categories", function(req, res) {
+router.post("/categories", function(req, res, next) {
     console.log(req.body)
     if (req.session.admin) {
         let category = new Category ({"name":req.body.name}) 
         category.save().then(function(category) {
             console.log(category);
             return res.status(201).json(category);
-        }).catch(function(error) {
-            console.log("Cannot add book.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})
     }
 });
 
-router.put("/categories/:id", function(req, res) {
+router.put("/categories/:id", function(req, res, next) {
     if (req.session.admin) {
         let category = {
             "name":req.body.name,
         };
         Category.replaceOne({"_id":req.params.id},category).then(function(category) {
             console.log(category);
-            return res.status(204).json(category);
-        }).catch(function(error) {
-            console.log("Cannot edit category.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+            return res.status(201).json(category);
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})
@@ -176,11 +155,8 @@ router.delete("/categories/:id", function(req, res) {
     if (req.session.admin) {
         Category.deleteOne({"_id":req.params.id}).then(function(category) {
             console.log(category);
-            return res.status(200).json(category);
-        }).catch(function(error) {
-            console.log("Cannot delete category.", error);
-            return res.status(500).json({"Message":"Internal Server Error"});
-        })
+            return res.status(204).json(category);
+        }).catch(error => next(error)) 
     } else {
         console.log("Not admin")
         return res.status(403).json({"Message":"Forbidden"})

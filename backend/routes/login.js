@@ -7,7 +7,7 @@ const Session = require("../models/session");
 
 const router = express.Router();
 
-router.post("/login", function(req, res) {
+router.post("/login", function(req, res, next) {
     User.findOne({"name":req.body.name})
     .then(function(user) {	
         bcrypt.compare(req.body.password, user.password, function(error, success) {
@@ -23,18 +23,12 @@ router.post("/login", function(req, res) {
 			});
 			session.save().then(function() {
 				return res.status(200).json({"user":req.body.name, "token":token, "admin":user.admin});
-			}).catch(function(error) {
-				console.log(error);
-				return res.status(500).json({"Message":"Internal Server Error"});
-			});
+			}).catch(error => next(error))
 		})
-	}).catch(function(error) {
-		console.log(error);
-		return res.status(500).json({"Message":"Internal Server Error"})
-	})
+	}).catch(error => next(error)) 
 });
 
-router.post("/register", function(req, res) {
+router.post("/register", function(req, res, next) {
     bcrypt.hash(req.body.password, 14, function(err, password_hash) {
         let user = new User({
             "name":req.body.name,
@@ -43,20 +37,17 @@ router.post("/register", function(req, res) {
         })
         user.save().then(function(user) {
             return res.status(201).json({"Message":"Register success"})
-        }).catch(function(error) {
+        }).catch(error => {
             return res.status(409).json({"Message":"Username already in use"})
         })
     })
 });
 
-router.post("/logout", function(req, res) {
+router.post("/logout", function(req, res, next) {
     Session.deleteOne({"token":req.headers.token})
     .then(function() {
         return res.status(200).json({"Message":"Logged out"})
-    }).catch(function(error) {
-		console.log(error);
-		return res.status(500).json({"Message":"Internal Server Error"})
-	})
+    }).catch(error => next(error))
 })
 
 module.exports = router;
