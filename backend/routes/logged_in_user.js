@@ -123,9 +123,9 @@ router.delete("/books/:id", function(req, res, next) {
 });
 
 router.post("/categories", function(req, res, next) {
-    console.log(req.body)
     if (req.session.admin) {
-        let category = new Category ({"name":req.body.name}) 
+        let category = new Category ({"name":req.body.name, "description":req.body.description})
+        console.log(category)
         category.save().then(function(category) {
             console.log(category);
             return res.status(201).json(category);
@@ -140,6 +140,7 @@ router.put("/categories/:id", function(req, res, next) {
     if (req.session.admin) {
         let category = {
             "name":req.body.name,
+            "description":req.body.description
         };
         Category.replaceOne({"_id":req.params.id},category).then(function(category) {
             console.log(category);

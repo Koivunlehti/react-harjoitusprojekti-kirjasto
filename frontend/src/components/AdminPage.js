@@ -13,7 +13,7 @@ const AdminPage = (props) => {
 
     const [categories, setCategories] = useState([]);
     const [books, setBooks] = useState([]);
-    const [catName, setCatName] = useState("");
+    const [category, setCategory] = useState([]);
 
     const [book, setBook] = useState({
         "name":"",
@@ -57,7 +57,12 @@ const AdminPage = (props) => {
     }, [])
 
     const onChangeNewCat = (event) => {
-        setCatName(event.target.value)
+        setCategory((category) => {
+            return {
+                ...category,
+                [event.target.name]:event.target.value
+            }
+        })
     }
 
     const onChangeNewBook = (event) => {
@@ -70,17 +75,19 @@ const AdminPage = (props) => {
     }
 
     const handleCategoryAddNew = () =>{
-        categoryService.createCategory({"name":catName}, props.isLoggedIn.token)
+        categoryService.createCategory(category, props.isLoggedIn.token)
         .then((category) => {
             setCategories(categories.concat(category))
-            setCatName("")
+            setCategory({
+                name:"",
+                description:""})
         })
         .catch((error) => {
             console.log(error)
         })
     }
-    const handleCategoryUpdate = (id, name) =>{
-        categoryService.updateCategory(id, {"name":name}, props.isLoggedIn.token)
+    const handleCategoryUpdate = (id, category) =>{
+        categoryService.updateCategory(id, category, props.isLoggedIn.token)
         .then((updatedCategory) => {
             setCategories(categories.map(category => category._id === updatedCategory._id ? updatedCategory : category))
         })
@@ -147,7 +154,8 @@ const AdminPage = (props) => {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th colSpan={3}>Category name</th>
+                            <th>Category name</th>
+                            <th colSpan={3}>Description</th>
                         </tr>
                     </thead>       
                     <tbody>
@@ -155,7 +163,8 @@ const AdminPage = (props) => {
                     </tbody>
                     <tfoot>                        
                         <tr>
-                            <td><input type="text" id="category" name="category" onChange={onChangeNewCat} value={catName}></input></td>
+                            <td><input type="text" id="name" name="name" onChange={onChangeNewCat} value={category.name}></input></td>
+                            <td><input type="text" id="description" name="description" onChange={onChangeNewCat} value={category.description}></input></td>
                             <td colSpan={2}><button className="btn btn-outline-primary" onClick={handleCategoryAddNew}>Add new category</button></td>
                         </tr>
                     </tfoot>
