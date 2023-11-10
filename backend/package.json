@@ -4,7 +4,8 @@
   "description": "Kirjasto harjoitusprojektin backend",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "MIT",
@@ -16,6 +17,7 @@
     "mongoose": "^7.6.3"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.0.1"
   }
 }

@@ -70,16 +70,19 @@ library_server.use("/admin", isUserLogged, loggedInUsers);
 const errorHandler = (error, request, response, next) => {
     console.log("error name:", error.name)
 	console.log("error message:", error.message)
-
+	//console.log("error", error)
+	
     if (error.name === "CastError") 
-		return response.status(400).json({ "error": "Format of the id is wrong" })
-	else if (error.name === "ValidationError")
+		return response.status(400).json({ "error": "Format of the id is wrong." })
+	else if (error.name === "ValidationError") 
 		return response.status(400).json({ "error": error.message })
 	else if (error.name === "MongoServerSelectionError")
-		return response.status(500).json({ "error": "Cannot connect to database" })
+		return response.status(500).json({ "error": "Cannot connect to database." })
 	else if (error.name === "MongoServerError")
-		return response.status(500).json({ "error": "Database error" })
-	
+		if (error.code === 11000)
+			return response.status(500).json({"error": "Value '" + error.keyValue.name + "' already exists."})
+		else
+			return response.status(500).json({ "error": "Database error." })
 	next(error) 
 }
 library_server.use(errorHandler)

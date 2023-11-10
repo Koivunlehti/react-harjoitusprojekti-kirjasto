@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 let categorySchema = mongoose.Schema({
     name:{
         type:String, 
-        unique:true,
-        required:true,
-        minlength:3
+        unique:[true, "Category name already exists."],
+        required:[true, "Category name cannot be empty."], 
+        minlength:[3, "Category name is too short."] 
     },
     description: {
         type:String,
-        maxlength:200
+        maxlength:[200, "Category description is too long."]
     }
 });
 
