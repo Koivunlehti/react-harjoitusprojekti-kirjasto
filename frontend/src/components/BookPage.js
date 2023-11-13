@@ -26,7 +26,7 @@ const BookPage = (props) => {
     useEffect(() => {
         if (selectedCategory === null)
             return;
-        bookService.getByCategoryId(selectedCategory)
+        bookService.getByCategoryId(selectedCategory._id)
         .then(books => {
             setBooks(books);
             console.log("Get books:", books);
@@ -34,8 +34,8 @@ const BookPage = (props) => {
     }, [selectedCategory])
 
     // Select category button click
-    const handleCategoryClick = (id) => {
-        setSelectedCategory(id)
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category)
     }
 
     // Return back to categories button click
@@ -72,7 +72,6 @@ const BookPage = (props) => {
                 <h3>Book Categories:</h3>
                 <div className="row row-cols-1 row-cols-md-4 g-4">
                     {categories.map(category => <Category key={category._id} category={category} handleClick={handleCategoryClick}/>)}
-                    <p>{selectedCategory}</p>
                 </div>
             </div>
         )
@@ -81,14 +80,14 @@ const BookPage = (props) => {
         if (selectedBook !== null) {
             return (
                 <div className="container">
-                    <BookDetails book={selectedBook} handleClick={handleBookDetailsBackClick} loanBookHandler={handleBookDetailsLoanClick} isLoggedIn={props.isLoggedIn}/>
+                    <BookDetails book={selectedBook} category={selectedCategory.name} handleClick={handleBookDetailsBackClick} loanBookHandler={handleBookDetailsLoanClick} isLoggedIn={props.isLoggedIn}/>
                 </div>
             )
         }
         else {
             return (
                 <div className="container">
-                    <h3 className="mb-3">Selected Category: {categories.map(category => category._id === selectedCategory ? category.name : "")}</h3>
+                    <h3 className="mb-3">Selected Category: {selectedCategory.name}</h3>
                     {
                         books.length > 0 ?
                             <div className="row row-cols-1 row-cols-md-4 g-4">
