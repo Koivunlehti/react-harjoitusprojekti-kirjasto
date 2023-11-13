@@ -8,6 +8,7 @@ let bookSchema = mongoose.Schema({
     },
     writer:String,
     publisher:String,
+    year:Number,
     page_amount:Number,
     category_id:String,
     description:{

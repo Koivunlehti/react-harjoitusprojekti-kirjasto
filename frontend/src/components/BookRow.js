@@ -5,8 +5,10 @@ const BookRow = (props) => {
         "name":props.book.name,
         "writer":props.book.writer,
         "publisher":props.book.publisher,
+        "year":props.book.year,
         "page_amount":props.book.page_amount,
         "category_id":props.book.category_id,
+        "description":props.book.description,
         "loaned":props.book.loaned
     })
 
@@ -32,12 +34,19 @@ const BookRow = (props) => {
                     <input type="text" name="publisher" value={book.publisher} onChange={onChange} />
                 </td>
                 <td>
+                    <input type="number" name="year" value={book.year} onChange={onChange} />
+                </td>
+                <td>
                     <input type="number" name="page_amount" value={book.page_amount} onChange={onChange} />
                 </td>
                 <td>
                     <select name="category_id" onChange={onChange} value={book.category_id}>
                         {props.categories.map(category => <option key={category.name} name={category.name} value={category._id}>{category.name}</option>)}
+                        <option name="no_category" value="">No Category</option>
                     </select>
+                </td>
+                <td>
+                    <textarea name="description" value={book.description} onChange={onChange} />
                 </td>
                 <td>
                 <input type="text" name="loaned" value={book.loaned} onChange={onChange} />

@@ -76,8 +76,10 @@ router.post("/books", function(req, res, next) {
             "name":req.body.name,
             "writer":req.body.writer,
             "publisher":req.body.publisher,
+            "year":req.body.year,
             "page_amount":req.body.page_amount,
             "category_id":req.body.category_id,
+            "description":req.body.description,
             "loaned":""
         });
         book.save().then(function(book) {
@@ -96,9 +98,11 @@ router.put("/books/:id", function(req, res, next) {
             "name":req.body.name,
             "writer":req.body.writer,
             "publisher":req.body.publisher,
+            "year":req.body.year,
             "page_amount":req.body.page_amount,
             "category_id":req.body.category_id,
-            "loaned":req.body.loaned
+            "description":req.body.description,
+            "loaned":""
         };
         Book.replaceOne({"_id":req.params.id},book).then(function(book) {
             console.log(book);

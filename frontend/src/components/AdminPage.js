@@ -19,8 +19,10 @@ const AdminPage = (props) => {
         "name":"",
         "writer":"",
         "publisher":"",
+        "year":"",
         "page_amount":"",
         "category_id":"",
+        "description":"",
         "loaned":""
     });
 
@@ -31,13 +33,6 @@ const AdminPage = (props) => {
         categoryService.getAll()
         .then(categories => {
             setCategories(categories);
-            if (categories.length > 0)
-                setBook((book) => {
-                    return {
-                        ...book,
-                        "category_id":categories[0]._id
-                    }
-                })
             console.log("Get categories:", categories);
         })
         .catch ((error) => {
@@ -115,8 +110,10 @@ const AdminPage = (props) => {
                 "name":"",
                 "writer":"",
                 "publisher":"",
+                "year":"",
                 "page_amount":"",
-                "category_id":categories.length > 0 ? categories[0]._id: "",
+                "category_id":"",
+                "description":"",
                 "loaned":""
             })
         })
@@ -178,8 +175,10 @@ const AdminPage = (props) => {
                             <th>Book name</th>
                             <th>Writer</th>
                             <th>Publisher</th>
+                            <th>Year of publish</th>
                             <th>Page amount</th>
                             <th>Category id</th>
+                            <th>Description</th>
                             <th colSpan={3}>Loaned</th>
                         </tr>
                     </thead>       
@@ -193,10 +192,13 @@ const AdminPage = (props) => {
                             <td><input type="text" name="name" value={book.name} onChange={onChangeNewBook} /></td>
                             <td><input type="text" name="writer" value={book.writer} onChange={onChangeNewBook} /></td>
                             <td><input type="text" name="publisher" value={book.publisher} onChange={onChangeNewBook} /></td>
+                            <td><input type="number" name="year" value={book.year} onChange={onChangeNewBook} /></td>
                             <td><input type="number" name="page_amount" value={book.page_amount} onChange={onChangeNewBook} /></td>
-                            <td><select name="category_id" onChange={onChangeNewBook} value={categories.length > 0 ? categories[0]._id : ""}>
+                            <td><select name="category_id" onChange={onChangeNewBook} value={book.category_id}>
                                 {categories.map(category => <option key={category.name} name={category.name} value={category._id}>{category.name}</option>)}
+                                <option name="no_category" value="">No Category</option>
                             </select></td>
+                            <td><textarea name="description" value={book.description} onChange={onChangeNewBook} /></td>
                             <td><input type="text" name="loaned" value={book.loaned} onChange={onChangeNewBook} /></td>
                             <td colSpan={2}>
                                 <button className="btn btn-outline-primary" onClick={handleBookAddNew}>Add new book</button>
