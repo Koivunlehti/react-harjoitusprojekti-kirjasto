@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import CategoryRow from "./CategoryRow"
 import BookRow from "./BookRow"
+import Message from "./Message";
 
 import categoryService from "../services/categories"
 import bookService from "../services/books"
@@ -14,7 +15,6 @@ const AdminPage = (props) => {
     const [categories, setCategories] = useState([]);
     const [books, setBooks] = useState([]);
     const [category, setCategory] = useState([]);
-
     const [book, setBook] = useState({
         "name":"",
         "writer":"",
@@ -25,6 +25,7 @@ const AdminPage = (props) => {
         "description":"",
         "loaned":""
     });
+    const [message, setMessage] = useState({"success":true, "message":""})
 
     useEffect(() => {
         if(!props.isLoggedIn.user)
@@ -37,6 +38,7 @@ const AdminPage = (props) => {
         })
         .catch ((error) => {
             console.log("Cannot get categories", error)
+            show_message(false,"Cannot get categories", error.response.data)
         })
     }, [])
 
@@ -48,6 +50,7 @@ const AdminPage = (props) => {
         })
         .catch ((error) => {
             console.log("Cannot get books", error)
+            show_message(false,"Cannot get books", error.response.data)
         })
     }, [])
 
@@ -58,6 +61,19 @@ const AdminPage = (props) => {
                 [event.target.name]:event.target.value
             }
         })
+    }
+
+    const show_message = (is_success, message_text, error_data) => {
+        if(!is_success)
+            if (error_data.Message)
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
+            else
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        else
+            setMessage({"success":is_success, "message":message_text})        
+        setTimeout(() => {
+            setMessage({"success":true, "message":""})
+        }, 5000)
     }
 
     const onChangeNewBook = (event) => {
@@ -76,18 +92,22 @@ const AdminPage = (props) => {
             setCategory({
                 name:"",
                 description:""})
+            show_message(true,"New category added successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Adding new category failed", error.response.data)
         })
     }
     const handleCategoryUpdate = (id, category) =>{
         categoryService.updateCategory(id, category, props.isLoggedIn.token)
         .then((updatedCategory) => {
             setCategories(categories.map(category => category._id === updatedCategory._id ? updatedCategory : category))
+            show_message(true,"Category updated successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Updating category failed", error.response.data)
         })
         
     }
@@ -95,9 +115,11 @@ const AdminPage = (props) => {
         categoryService.deleteCategory(id, props.isLoggedIn.token)
         .then((deletedCategory) => {
             setCategories(categories.filter(category => category._id !== id))
+            show_message(true,"Category deleted successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Deleting category failed", error.response.data)
         })
     }
 
@@ -116,9 +138,11 @@ const AdminPage = (props) => {
                 "description":"",
                 "loaned":""
             })
+            show_message(true,"New book added successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Adding new book failed", error.response.data)
         })
     }
 
@@ -126,9 +150,11 @@ const AdminPage = (props) => {
         bookService.updateBook(id, book, props.isLoggedIn.token)
         .then((updatedBook) => {
             setBooks(books.map(book => book._id === updatedBook._id ? updatedBook : book))
+            show_message(true,"Book updated successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Updating book failed", error.response.data)
         })
     }
 
@@ -136,9 +162,11 @@ const AdminPage = (props) => {
         bookService.deleteBook(id, props.isLoggedIn.token)
         .then((deletedBook) => {
             setBooks(books.filter(book => book._id !== id))
+            show_message(true,"Book deleted successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Deleting book failed", error.response.data)
         })
     }
 
@@ -161,14 +189,15 @@ const AdminPage = (props) => {
                     <tfoot>                        
                         <tr>
                             <td><input type="text" id="name" name="name" onChange={onChangeNewCat} value={category.name}></input></td>
-                            <td><input type="text" id="description" name="description" onChange={onChangeNewCat} value={category.description}></input></td>
+                            <td><textarea id="description" name="description" value={category.description} onChange={onChangeNewCat} /></td>
                             <td colSpan={2}><button className="btn btn-outline-primary" onClick={handleCategoryAddNew}>Add new category</button></td>
                         </tr>
                     </tfoot>
                 </table>
             </div> 
+            <Message message={message}></Message>
             <h4>Manage books:</h4>
-            <div className="d-inline-flex">
+            <div className="" style={{overflow:"auto", whiteSpace:"nowrap"}}>
                 <table className="table">
                     <thead>
                         <tr>
@@ -207,6 +236,7 @@ const AdminPage = (props) => {
                     </tfoot>
                 </table>
             </div>
+            <Message message={message}></Message>
         </div>
     )
 }

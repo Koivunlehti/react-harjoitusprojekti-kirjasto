@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import Category from "./Category";
 import Book from "./Book";
 import BookDetails from "./BookDetails";
+import Message from "./Message";
 
 import categoryService from "../services/categories"
 import bookService from "../services/books"
@@ -13,6 +14,7 @@ const BookPage = (props) => {
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [books, setBooks] = useState([])
     const [selectedBook, setSelectedBook] = useState(null)
+    const [message, setMessage] = useState({"success":true, "message":""})
 
     // Get Categories
     useEffect(() => {
@@ -32,6 +34,19 @@ const BookPage = (props) => {
             console.log("Get books:", books);
         })
     }, [selectedCategory])
+
+    const show_message = (is_success, message_text, error_data) => {
+        if(!is_success)
+            if (error_data.Message)
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
+            else
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        else
+            setMessage({"success":is_success, "message":message_text})        
+        setTimeout(() => {
+            setMessage({"success":true, "message":""})
+        }, 5000)
+    }
 
     // Select category button click
     const handleCategoryClick = (category) => {
@@ -55,9 +70,11 @@ const BookPage = (props) => {
             let updatedBook = loanedBook
             updatedBook.loaned = props.isLoggedIn.user
             setBooks(books.map(book => book.id === loanedBook._id ? updatedBook : book))
+            show_message(true,"Book has been loaned successfully")
         })
         .catch((error) => {
             console.log(error)
+            show_message(false,"Cannot loan this book", error.response.data)
         })
     }
 
@@ -80,6 +97,7 @@ const BookPage = (props) => {
         if (selectedBook !== null) {
             return (
                 <div className="container">
+                    <Message message={message} />
                     <BookDetails book={selectedBook} category={selectedCategory.name} handleClick={handleBookDetailsBackClick} loanBookHandler={handleBookDetailsLoanClick} isLoggedIn={props.isLoggedIn}/>
                 </div>
             )

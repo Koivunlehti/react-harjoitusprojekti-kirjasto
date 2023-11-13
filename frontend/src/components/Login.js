@@ -2,23 +2,40 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 import loginService from "../services/logins"
+import Message from "./Message";
 
 const Login = (props) => {
     const [loginInfo, setLoginInfo] = useState({"name":"","password":""});
     const navigate = useNavigate();
+    const [message, setMessage] = useState({"success":true, "message":""})
 
     if(props.isLoggedIn.user)
         navigate("/");
+
+    const show_message = (is_success, message_text, error_data) => {
+        if(!is_success)
+            if (error_data.Message)
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
+            else
+                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        else
+            setMessage({"success":is_success, "message":message_text})        
+        setTimeout(() => {
+            setMessage({"success":true, "message":""})
+        }, 5000)
+    }
 
     const click = (event) => {
         event.preventDefault();
         if (event.target.name === "register") {
             loginService.register(loginInfo)
             .then((user) => {
+                show_message(true,"Registeration completed succesfully")
                 console.log(user)
             })
             .catch((error) => {
                 console.log(error)
+                show_message(false,"Registeration failed", error.response.data)
             })
         } else {
             loginService.login(loginInfo)
@@ -30,6 +47,7 @@ const Login = (props) => {
             })
             .catch((error) => {
                 console.log(error)
+                show_message(false, "Login failed", error.response.data)
             })
         }
     }
@@ -60,6 +78,9 @@ const Login = (props) => {
                     <button className="btn btn-outline-primary flex-fill" onClick={click} name="register">Register</button>
                 </div>
             </form>
+            <div className="pt-4">
+                <Message message={message}></Message>
+            </div>
         </div>
     )
 }

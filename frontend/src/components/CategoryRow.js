@@ -14,12 +14,12 @@ const CategoryRow = (props) => {
             }
         })
     }
-
+<textarea name="description" value={category.description} onChange={onChange} />
     return (
         <>
             <tr>
                 {props.admin ? <td><input name="name" onChange={onChange} value={category.name}></input></td> : <td>{props.category.name}</td>}
-                {props.admin ? <td><input name="description" onChange={onChange} value={category.description}></input></td> : <td>{props.category.description}</td>}
+                {props.admin ? <td><textarea name="description" value={category.description} onChange={onChange} /></td> : <td>{props.category.description}</td>}
                 {props.admin ? <td><button className="btn btn-outline-success" onClick={() => props.handleCategoryUpdate(props.category._id, category)}>Update</button></td> : <></>}
                 {props.admin ? <td><button className="btn btn-outline-danger"onClick={() => props.handleCategoryDelete(props.category._id)}>Delete</button></td> : <></>}
             </tr>
