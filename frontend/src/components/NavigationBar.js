@@ -33,7 +33,7 @@ const NavigationBar = (props) => {
                         <Link className="nav-link" to="/books">Books</Link>
                     </li>
                         {props.isLoggedIn.user ? <li className="nav-item"><Link className="nav-link" to="/loaned">Loaned Books</Link></li> : <></> }
-                        {props.isLoggedIn.admin ? <li className="nav-item"><Link className="nav-link" to="/admin">Admin stuff</Link></li> : <></>}     
+                        {props.isLoggedIn.admin ? <li className="nav-item"><Link className="nav-link" to="/admin">Admin</Link></li> : <></>}     
                 </ul>
             </div>
             <div className="container-fluid d-flex justify-content-center">

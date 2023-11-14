@@ -16,8 +16,10 @@ router.put("/books/loan/:id",function(req, res, next) {
                 "name":book.name,
                 "writer":book.writer,
                 "publisher":book.publisher,
+                "year":book.year,
                 "page_amount":book.page_amount,
                 "category_id":book.category_id,
+                "description":book.description,
                 "loaned": req.session.user
                 };
                 Book.replaceOne({"_id":req.params.id}, newBook)
@@ -43,12 +45,14 @@ router.put("/books/return/:id",function(req, res, next) {
             if (book.loaned !== "" && book.loaned === req.session.user) 
             {
                 let newBook = {
-                "name":book.name,
-                "writer":book.writer,
-                "publisher":book.publisher,
-                "page_amount":book.page_amount,
-                "category_id":book.category_id,
-                "loaned": ""
+                    "name":book.name,
+                    "writer":book.writer,
+                    "publisher":book.publisher,
+                    "year":book.year,
+                    "page_amount":book.page_amount,
+                    "category_id":book.category_id,
+                    "description":book.description,
+                    "loaned": ""
                 };
                 Book.replaceOne({"_id":req.params.id}, newBook)
                 .then(function(book) {
@@ -65,8 +69,6 @@ router.put("/books/return/:id",function(req, res, next) {
         }
     }).catch(error => next(error))
 })
-
-
 
 // ---------- Admin user routes ----------
 
@@ -102,7 +104,7 @@ router.put("/books/:id", function(req, res, next) {
             "page_amount":req.body.page_amount,
             "category_id":req.body.category_id,
             "description":req.body.description,
-            "loaned":""
+            "loaned":req.body.loaned
         };
         Book.replaceOne({"_id":req.params.id},book).then(function(book) {
             console.log(book);
