@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react"
+import {useState, useEffect, useReducer} from "react"
 import {useNavigate} from "react-router-dom";
 
 import CategoryRow from "./CategoryRow"
@@ -8,13 +8,15 @@ import Message from "./Message";
 import categoryService from "../services/categories"
 import bookService from "../services/books"
 
+import messageReducer from "../reducers/messageReducer";
+
 const AdminPage = (props) => {
     
     const navigate = useNavigate();
 
     const [categories, setCategories] = useState([]);
     const [books, setBooks] = useState([]);
-    const [category, setCategory] = useState([]);
+    const [category, setCategory] = useState({"name":"","description":""});
     const [book, setBook] = useState({
         "name":"",
         "writer":"",
@@ -25,8 +27,8 @@ const AdminPage = (props) => {
         "description":"",
         "loaned":""
     });
-    const [message, setMessage] = useState({"success":true, "message":""})
-
+    const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
+    
     useEffect(() => {
         if(!props.isLoggedIn.user)
             navigate("/");
@@ -64,16 +66,12 @@ const AdminPage = (props) => {
     }
 
     const show_message = (is_success, message_text, error_data) => {
-        if(!is_success)
-            if (error_data.Message)
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
-            else
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        if(is_success)
+            messageDispatch({"type":"success", "success":is_success, "message":message_text})
         else
-            setMessage({"success":is_success, "message":message_text})        
+            messageDispatch({"type":"failed", "success":is_success, "message":message_text, "data":error_data})
         setTimeout(() => {
-            setMessage({"success":true, "message":""})
-        }, 5000)
+            messageDispatch({})}, 5000)
     }
 
     const onChangeNewBook = (event) => {

@@ -1,27 +1,24 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useReducer} from "react";
 import bookService from "../services/books"
 import BookRow from "./BookRow";
 import Message from "./Message";
 
 import {useNavigate} from "react-router-dom";
 
+import messageReducer from "../reducers/messageReducer";
+
 const LoanedBooks = (props) => {
     const [loanedBooks, setLoanedBooks] = useState([])
-    const [message, setMessage] = useState({"success":true, "message":""})
-
+    const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
     const navigate = useNavigate();
 
     const show_message = (is_success, message_text, error_data) => {
-        if(!is_success)
-            if (error_data.Message)
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
-            else
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        if(is_success)
+            messageDispatch({"type":"success", "success":is_success, "message":message_text})
         else
-            setMessage({"success":is_success, "message":message_text})        
+            messageDispatch({"type":"failed", "success":is_success, "message":message_text, "data":error_data})
         setTimeout(() => {
-            setMessage({"success":true, "message":""})
-        }, 5000)
+            messageDispatch({})}, 5000)
     }
 
     useEffect(() => {
@@ -49,7 +46,6 @@ const LoanedBooks = (props) => {
             console.log(error)
             show_message(false, "Returning book failed", error.response.data)
         })
-        
     }
 
     return (

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useReducer} from "react";
 
 import Category from "./Category";
 import Book from "./Book";
@@ -8,13 +8,15 @@ import Message from "./Message";
 import categoryService from "../services/categories"
 import bookService from "../services/books"
 
+import messageReducer from "../reducers/messageReducer";
+
 const BookPage = (props) => {
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [books, setBooks] = useState([])
     const [selectedBook, setSelectedBook] = useState(null)
-    const [message, setMessage] = useState({"success":true, "message":""})
+    const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
 
     // Get Categories
     useEffect(() => {
@@ -22,6 +24,10 @@ const BookPage = (props) => {
         .then(categories => {
             setCategories(categories);
             console.log("Get categories:", categories);
+        })
+        .catch((error) => {
+            console.log(error)
+            show_message(false,"Cannot get categories", error.response.data)
         })
     }, [])
 
@@ -33,19 +39,19 @@ const BookPage = (props) => {
             setBooks(books);
             console.log("Get books:", books);
         })
+        .catch((error) => {
+            console.log(error)
+            show_message(false,"Cannot get books", error.response.data)
+        })
     }, [selectedCategory])
 
     const show_message = (is_success, message_text, error_data) => {
-        if(!is_success)
-            if (error_data.Message)
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.Message}`})
-            else
-                setMessage({"success":is_success, "message":`${message_text}: ${error_data.error}`})
+        if(is_success)
+            messageDispatch({"type":"success", "success":is_success, "message":message_text})
         else
-            setMessage({"success":is_success, "message":message_text})        
+            messageDispatch({"type":"failed", "success":is_success, "message":message_text, "data":error_data})
         setTimeout(() => {
-            setMessage({"success":true, "message":""})
-        }, 5000)
+            messageDispatch({})}, 5000)
     }
 
     // Select category button click
@@ -87,6 +93,7 @@ const BookPage = (props) => {
         return (
             <div className="container">
                 <h3>Book Categories:</h3>
+                <Message message={message} />
                 <div className="row row-cols-1 row-cols-md-4 g-4">
                     {categories.map(category => <Category key={category._id} category={category} handleClick={handleCategoryClick}/>)}
                 </div>
@@ -106,6 +113,7 @@ const BookPage = (props) => {
             return (
                 <div className="container">
                     <h3 className="mb-3">Selected Category: {selectedCategory.name}</h3>
+                    <Message message={message} />
                     {
                         books.length > 0 ?
                             <div className="row row-cols-1 row-cols-md-4 g-4">
