@@ -11,9 +11,11 @@ const Login = (props) => {
     const navigate = useNavigate();
     const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
 
+    // Redirect if logged in
     if(props.isLoggedIn.user)
         navigate("/");
 
+    // A function for showing messages 
     const show_message = (is_success, message_text, error_data) => {
         if(is_success)
             messageDispatch({"type":"success", "success":is_success, "message":message_text})
@@ -23,6 +25,7 @@ const Login = (props) => {
             messageDispatch({})}, 5000)
     }
 
+    // Login and register button click handler
     const click = (event) => {
         event.preventDefault();
         if (event.target.name === "register") {
@@ -50,6 +53,7 @@ const Login = (props) => {
         }
     }
 
+    // Input fields onChange handler
     const onChange = (event) => {
         setLoginInfo((info) => {
             return {

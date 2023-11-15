@@ -9,12 +9,13 @@ import categoryService from "../services/categories"
 import bookService from "../services/books"
 
 import messageReducer from "../reducers/messageReducer";
+import categoryReducer from "../reducers/categoryReducer";
 
 const AdminPage = (props) => {
     
     const navigate = useNavigate();
-
-    const [categories, setCategories] = useState([]);
+    
+    const [categories, categoriesDispatch] = useReducer(categoryReducer,[])
     const [books, setBooks] = useState([]);
     const [category, setCategory] = useState({"name":"","description":""});
     const [book, setBook] = useState({
@@ -29,13 +30,15 @@ const AdminPage = (props) => {
     });
     const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
     
+
+    // Get all categories
     useEffect(() => {
         if(!props.isLoggedIn.user)
             navigate("/");
 
         categoryService.getAll()
         .then(categories => {
-            setCategories(categories);
+            categoriesDispatch({"type":"create", "categories":categories})
             console.log("Get categories:", categories);
         })
         .catch ((error) => {
@@ -44,6 +47,7 @@ const AdminPage = (props) => {
         })
     }, [])
 
+    // Get all books
     useEffect(() => {
         bookService.getAll()
         .then(books => {
@@ -56,6 +60,7 @@ const AdminPage = (props) => {
         })
     }, [])
 
+    // Categories input fields onChange handler
     const onChangeNewCat = (event) => {
         setCategory((category) => {
             return {
@@ -65,6 +70,7 @@ const AdminPage = (props) => {
         })
     }
 
+    // A function for showing messages 
     const show_message = (is_success, message_text, error_data) => {
         if(is_success)
             messageDispatch({"type":"success", "success":is_success, "message":message_text})
@@ -74,6 +80,7 @@ const AdminPage = (props) => {
             messageDispatch({})}, 5000)
     }
 
+    // Books input fields onChange handler
     const onChangeNewBook = (event) => {
         setBook((book) => {
             return {
@@ -83,44 +90,49 @@ const AdminPage = (props) => {
         })
     }
 
+    // Adding new categories button click
     const handleCategoryAddNew = () =>{
         categoryService.createCategory(category, props.isLoggedIn.token)
         .then((category) => {
-            setCategories(categories.concat(category))
+            categoriesDispatch({"type":"add", "category":category})
             setCategory({
                 name:"",
                 description:""})
-            show_message(true,"New category added successfully")
+            show_message(true, "New category added successfully")
         })
         .catch((error) => {
             console.log(error)
-            show_message(false,"Adding new category failed", error.response.data)
-        })
-    }
-    const handleCategoryUpdate = (id, category) =>{
-        categoryService.updateCategory(id, category, props.isLoggedIn.token)
-        .then((updatedCategory) => {
-            setCategories(categories.map(category => category._id === updatedCategory._id ? updatedCategory : category))
-            show_message(true,"Category updated successfully")
-        })
-        .catch((error) => {
-            console.log(error)
-            show_message(false,"Updating category failed", error.response.data)
-        })
-        
-    }
-    const handleCategoryDelete = (id) =>{
-        categoryService.deleteCategory(id, props.isLoggedIn.token)
-        .then((deletedCategory) => {
-            setCategories(categories.filter(category => category._id !== id))
-            show_message(true,"Category deleted successfully")
-        })
-        .catch((error) => {
-            console.log(error)
-            show_message(false,"Deleting category failed", error.response.data)
+            show_message(false, "Adding new category failed", error.response.data)
         })
     }
 
+    // Updating categories button click
+    const handleCategoryUpdate = (id, category) =>{
+        categoryService.updateCategory(id, category, props.isLoggedIn.token)
+        .then((updatedCategory) => {
+            categoriesDispatch({"type":"update", "category":{"_id":id,"name":category.name,"description":category.description,"__v":0}})
+            show_message(true, "Category updated successfully")
+        })
+        .catch((error) => {
+            console.log(error)
+            show_message(false, "Updating category failed", error.response.data)
+        })
+    }
+
+    // Deleting categories button click
+    const handleCategoryDelete = (id) =>{
+        categoryService.deleteCategory(id, props.isLoggedIn.token)
+        .then((deletedCategory) => {
+            categoriesDispatch({"type":"delete", "id":id})
+            show_message(true, "Category deleted successfully")
+        })
+        .catch((error) => {
+            console.log(error)
+            show_message(false, "Deleting category failed", error.response.data)
+        })
+    }
+
+    // Adding new books button click
     const handleBookAddNew = () => {
         bookService.createBook(book, props.isLoggedIn.token)
         .then((newBook) => {
@@ -136,35 +148,37 @@ const AdminPage = (props) => {
                 "description":"",
                 "loaned":""
             })
-            show_message(true,"New book added successfully")
+            show_message(true, "New book added successfully")
         })
         .catch((error) => {
             console.log(error)
-            show_message(false,"Adding new book failed", error.response.data)
+            show_message(false, "Adding new book failed", error.response.data)
         })
     }
 
+    // Updating books button click
     const handleBookUpdate = (id, book) => {
         bookService.updateBook(id, book, props.isLoggedIn.token)
         .then((updatedBook) => {
             setBooks(books.map(book => book._id === updatedBook._id ? updatedBook : book))
-            show_message(true,"Book updated successfully")
+            show_message(true, "Book updated successfully")
         })
         .catch((error) => {
             console.log(error)
-            show_message(false,"Updating book failed", error.response.data)
+            show_message(false, "Updating book failed", error.response.data)
         })
     }
 
+    // Deleting books button click
     const handleBookDelete = (id) => {
         bookService.deleteBook(id, props.isLoggedIn.token)
         .then((deletedBook) => {
             setBooks(books.filter(book => book._id !== id))
-            show_message(true,"Book deleted successfully")
+            show_message(true, "Book deleted successfully")
         })
         .catch((error) => {
             console.log(error)
-            show_message(false,"Deleting book failed", error.response.data)
+            show_message(false, "Deleting book failed", error.response.data)
         })
     }
 

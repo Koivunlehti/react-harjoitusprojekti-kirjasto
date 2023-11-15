@@ -9,10 +9,11 @@ import categoryService from "../services/categories"
 import bookService from "../services/books"
 
 import messageReducer from "../reducers/messageReducer";
+import categoryReducer from "../reducers/categoryReducer";
 
 const BookPage = (props) => {
 
-    const [categories, setCategories] = useState([]);
+    const [categories, categoriesDispatch] = useReducer(categoryReducer,[])
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [books, setBooks] = useState([])
     const [selectedBook, setSelectedBook] = useState(null)
@@ -22,7 +23,7 @@ const BookPage = (props) => {
     useEffect(() => {
         categoryService.getAll()
         .then(categories => {
-            setCategories(categories);
+            categoriesDispatch({"type":"create", "categories":categories})
             console.log("Get categories:", categories);
         })
         .catch((error) => {
@@ -31,6 +32,7 @@ const BookPage = (props) => {
         })
     }, [])
 
+    // Get Books in selected category
     useEffect(() => {
         if (selectedCategory === null)
             return;
@@ -45,6 +47,7 @@ const BookPage = (props) => {
         })
     }, [selectedCategory])
 
+    // A function for showing messages
     const show_message = (is_success, message_text, error_data) => {
         if(is_success)
             messageDispatch({"type":"success", "success":is_success, "message":message_text})
@@ -65,11 +68,12 @@ const BookPage = (props) => {
         setBooks([])
     }
 
-    // Open details of the book
+    // Open details of the book button click
     const handleBookDetailsClick = (book) => {
         setSelectedBook(book)
     }
 
+    // Loaning books button click
     const handleBookDetailsLoanClick = (loanedBook) => {
         bookService.loanBook(loanedBook._id, props.isLoggedIn.token)
         .then(() => {
@@ -84,7 +88,7 @@ const BookPage = (props) => {
         })
     }
 
-    // Return back from book details
+    // Return back from book details button click
     const handleBookDetailsBackClick = () => {
         setSelectedBook(null)
     }

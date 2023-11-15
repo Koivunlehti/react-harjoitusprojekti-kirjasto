@@ -1,5 +1,4 @@
 const messageReducer = (message, action) => {
-    console.log(action.data)
     switch(action.type) {
         case "success":
             return ({

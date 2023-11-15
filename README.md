@@ -196,14 +196,14 @@ Backend palvelin tarjoaa seuraavat API osoitteet. Tässä on myös lueteltu peru
     - **admin/books/id**
 
         pyyntö -> token (header), name, writer, publisher, year, page_amount, category_id, description, loaned  
-        vastaus <- _id, name, writer, publisher, year, page_amount, category_id, description, loaned
+        vastaus <- Ei dataa
 
         Kirjan tietojen muokkaus kirjan id:n perusteella (admin käyttäjä)
 
     - **admin/categories/id**
 
         pyyntö -> token (header), name, description  
-        vastaus <- _id, name, description
+        vastaus <- Ei dataa
 
         Kategorian tietojen muokkaus kategorian id:n perusteella (admin käyttäjä)
 

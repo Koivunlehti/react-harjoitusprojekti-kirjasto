@@ -12,6 +12,7 @@ const LoanedBooks = (props) => {
     const [message, messageDispatch] = useReducer(messageReducer, {"success":true, "message":""});
     const navigate = useNavigate();
 
+    // A function for showing messages 
     const show_message = (is_success, message_text, error_data) => {
         if(is_success)
             messageDispatch({"type":"success", "success":is_success, "message":message_text})
@@ -21,6 +22,7 @@ const LoanedBooks = (props) => {
             messageDispatch({})}, 5000)
     }
 
+    // Get loaned books
     useEffect(() => {
         if(!props.isLoggedIn.user)
             navigate("/");
@@ -36,6 +38,7 @@ const LoanedBooks = (props) => {
 
     },[]);
 
+    // Return book button click
     const returnBookHandler = (id) => {
         bookService.returnBook(id, props.isLoggedIn.token)
         .then((book) =>{
